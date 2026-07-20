@@ -12,7 +12,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 # Database configuration
-DB_PATH = os.getenv('SUBSCRIPTION_DB_PATH', '/var/data/bot.db')
+DB_PATH = os.getenv('SUBSCRIPTION_DB_PATH', 'data/bot.db')
 DB_DIR = os.path.dirname(DB_PATH)
 
 # Get daily limit from rate limiter configuration
@@ -20,10 +20,18 @@ DAILY_TARGET = float(os.getenv("DAILY_TARGET", "30"))
 
 def init_db() -> None:
     """Initialize database with required tables"""
+    global DB_PATH, DB_DIR
     try:
         # Ensure directory exists
-        os.makedirs(DB_DIR, exist_ok=True)
-        
+        try:
+            if DB_DIR:
+                os.makedirs(DB_DIR, exist_ok=True)
+        except PermissionError:
+            logger.warning(f"Permission denied creating directory {DB_DIR}. Falling back to local data directory.")
+            DB_PATH = 'data/bot.db'
+            DB_DIR = os.path.dirname(DB_PATH)
+            os.makedirs(DB_DIR, exist_ok=True)
+            
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             

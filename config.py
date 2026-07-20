@@ -35,7 +35,7 @@ class Config:
     BOTALITY_TOKEN = os.getenv('BOTALITY_TOKEN')
     
     # Subscription and Payment Configuration
-    SUBSCRIPTION_DB_PATH = os.getenv('SUBSCRIPTION_DB_PATH', '/var/data/bot.db')
+    SUBSCRIPTION_DB_PATH = os.getenv('SUBSCRIPTION_DB_PATH', 'data/bot.db')
     PRO_PRICE_STARS = int(os.getenv('PRO_PRICE_STARS', '1000'))
     PRO_DURATION_DAYS = int(os.getenv('PRO_DURATION_DAYS', '30'))
     
