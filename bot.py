@@ -27,6 +27,22 @@ import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+# Robust Workaround for okama type hint bug on Python 3.10+ (np.array vs np.ndarray)
+import importlib.util
+try:
+    spec = importlib.util.find_spec('okama')
+    if spec and spec.submodule_search_locations:
+        helpers_path = os.path.join(spec.submodule_search_locations[0], 'common', 'helpers', 'helpers.py')
+        if os.path.exists(helpers_path):
+            with open(helpers_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            patched = content.replace("list | np.array", "list | np.ndarray").replace("Union[list, np.array]", "Union[list, np.ndarray]")
+            if patched != content:
+                with open(helpers_path, 'w', encoding='utf-8') as f:
+                    f.write(patched)
+except Exception:
+    pass
+
 import okama as ok
 
 # Import OKAMA service for robust API handling
